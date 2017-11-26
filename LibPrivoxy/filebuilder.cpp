@@ -442,5 +442,13 @@ long CFileBuilder::_GetFileLength()
 {
 	if( file_handle == NULL ) return 0;
 
+#if 0
 	return _filelength( file_handle->_file );
+#else
+    long prev = ftell(file_handle);
+    fseek(file_handle, 0L, SEEK_END);
+    long sz = ftell(file_handle);
+    fseek(file_handle, prev, SEEK_SET); //go back to where we were
+    return sz;
+#endif
 }
