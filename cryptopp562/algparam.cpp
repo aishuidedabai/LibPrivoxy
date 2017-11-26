@@ -8,7 +8,9 @@
 
 NAMESPACE_BEGIN(CryptoPP)
 
+#if 0
 PAssignIntToInteger g_pAssignIntToInteger = NULL;
+#endif
 
 bool CombinedNameValuePairs::GetVoidValue(const char *name, const std::type_info &valueType, void *pValue) const
 {

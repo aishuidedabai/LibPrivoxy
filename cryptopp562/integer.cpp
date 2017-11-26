@@ -2732,11 +2732,15 @@ void MultiplyByPower2Mod(word *R, const word *A, size_t k, const word *M, size_t
 
 InitializeInteger::InitializeInteger()
 {
+#if 0
 	if (!g_pAssignIntToInteger)
 	{
 		SetFunctionPointers();
 		g_pAssignIntToInteger = AssignIntToInteger;
 	}
+#else
+    SetFunctionPointers();
+#endif
 }
 
 static const unsigned int RoundupSizeTable[] = {2, 2, 2, 4, 4, 8, 8, 8, 8};

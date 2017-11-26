@@ -239,11 +239,20 @@ AssignFromHelperClass<T, T> AssignFromHelper(T *pObject, const NameValuePairs &s
 
 // ********************************************************
 
+#if 0
 // to allow the linker to discard Integer code if not needed.
 typedef bool (CRYPTOPP_API * PAssignIntToInteger)(const std::type_info &valueType, void *pInteger, const void *pInt);
 CRYPTOPP_DLL extern PAssignIntToInteger g_pAssignIntToInteger;
+#else
+// https://github.com/weidai11/cryptopp/commit/0e55f5ac7d98f3c852ace7b4622f40cfa60b629f
+#ifndef CRYPTOPP_NO_ASSIGN_TO_INTEGER
+// Allow the linker to discard Integer code if not needed.
+// Also see http://github.com/weidai11/cryptopp/issues/389.
+CRYPTOPP_DLL bool AssignIntToInteger(const std::type_info &valueType, void *pInteger, const void *pInt);
+#endif
+#endif // 0
 
-CRYPTOPP_DLL const std::type_info & CRYPTOPP_API IntegerTypeId();
+//CRYPTOPP_DLL const std::type_info & CRYPTOPP_API IntegerTypeId();
 
 class CRYPTOPP_DLL AlgorithmParametersBase
 {
@@ -309,8 +318,14 @@ public:
 
 	void AssignValue(const char *name, const std::type_info &valueType, void *pValue) const
 	{
-		// special case for retrieving an Integer parameter when an int was passed in
+#if 0
+        // special case for retrieving an Integer parameter when an int was passed in
 		if (!(g_pAssignIntToInteger != NULL && typeid(T) == typeid(int) && g_pAssignIntToInteger(valueType, pValue, &m_value)))
+#else
+#ifndef CRYPTOPP_NO_ASSIGN_TO_INTEGER
+        if (!(typeid(T) == typeid(int) && AssignIntToInteger(valueType, pValue, &m_value)))
+#endif
+#endif
 		{
 			NameValuePairs::ThrowIfTypeMismatch(name, typeid(T), valueType);
 			*reinterpret_cast<T *>(pValue) = m_value;
