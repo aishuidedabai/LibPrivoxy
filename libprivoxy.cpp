@@ -161,7 +161,7 @@ extern "C" LIBPRIVOXY_API int __stdcall start_privoxy(
 	)
 {
 	char szUserPass[1000]={0};
-	const char *base64_userpass = NULL;
+	char *base64_userpass = NULL;
 
 	g_terminate = 0;
 
